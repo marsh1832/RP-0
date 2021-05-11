@@ -867,6 +867,9 @@ namespace KerbalConstructionTime
                 return;
             }
 
+            newShip.FacilityBuiltIn = ship.FacilityBuiltIn;
+            newShip.KCTPersistentID = ship.KCTPersistentID;
+
             ship.RemoveFromBuildList();
 
             GetShipEditProgress(ship, out double progressBP, out _, out _);
@@ -1654,6 +1657,10 @@ namespace KerbalConstructionTime
                 GamePersistence.SaveGame("KCT_Backup", HighLogic.SaveFolder, SaveMode.OVERWRITE);
 
                 KCTGameStates.RecoveredVessel = new BuildListVessel(FlightGlobals.ActiveVessel, listType);
+
+                var dataModule = (KCTVesselTracker)FlightGlobals.ActiveVessel.vesselModules.FirstOrDefault(vm => vm is KCTVesselTracker);
+                KCTGameStates.RecoveredVessel.KCTPersistentID = dataModule?.Data.VesselID;
+                KCTGameStates.RecoveredVessel.FacilityBuiltIn = dataModule?.Data.FacilityBuiltIn ?? EditorFacility.None;
 
                 //KCT_GameStates.recoveredVessel.type = listType;
                 if (listType == BuildListVessel.ListType.VAB)
